@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="editor\commands\ReorderShapeCommand.cpp" />
+    <ClCompile Include="view\dialog\ColorDialog.cpp" />
+    <ClCompile Include="editor\commands\ChangeColorCommand.cpp" />
+    <ClCompile Include="editor\commands\DeleteShapesCommand.cpp" />
+    <ClCompile Include="editor\commands\AddShapeCommand.cpp" />
+    <ClCompile Include="editor\history\CommandHistory.cpp" />
+    <ClCompile Include="editor\commands\MoveShapesCommand.cpp" />
+    <ClCompile Include="editor\commands\ResizeShapesCommand.cpp" />
+    <ClCompile Include="model\shapes\PentagonStrategy.cpp" />
+    <ClCompile Include="model\shapes\StarStrategy.cpp" />
+    <ClCompile Include="visitor\SfmlRenderer.cpp" />
+    <ClCompile Include="visitor\SaveVisitor.cpp" />
+    <ClCompile Include="view\componentsView\CanvasView.cpp" />
+    <ClCompile Include="editor\serializer\DocumentSerializer.cpp" />
+    <ClCompile Include="editor\EditorController.cpp" />
+    <ClCompile Include="view\Application.cpp" />
+    <ClCompile Include="view\dialog\FileDialog.cpp" />
+    <ClCompile Include="view\componentsView\ShapeListView.cpp" />
+    <ClCompile Include="view\EditorView.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="model\Color.cpp" />
+    <ClCompile Include="model\observer\ConsolePictureObserver.cpp" />
+    <ClCompile Include="model\Picture.cpp" />
+    <ClCompile Include="model\Shape.cpp" />
+    <ClCompile Include="model\shapes\EllipseStrategy.cpp" />
+    <ClCompile Include="model\shapes\RectangleStrategy.cpp" />
+    <ClCompile Include="model\shapes\ShapeStrategyFactory.cpp" />
+    <ClCompile Include="model\shapes\TriangleStrategy.cpp" />
+    <ClCompile Include="view\componentsView\Button.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="editor\commands\ReorderShapeCommand.h" />
+    <ClInclude Include="view\dialog\ColorDialog.h" />
+    <ClInclude Include="editor\commands\ChangeColorCommand.h" />
+    <ClInclude Include="editor\commands\DeleteShapesCommand.h" />
+    <ClInclude Include="editor\commands\AddShapeCommand.h" />
+    <ClInclude Include="editor\history\CommandHistory.h" />
+    <ClInclude Include="editor\commands\MoveShapesCommand.h" />
+    <ClInclude Include="editor\commands\ResizeShapesCommand.h" />
+    <ClInclude Include="model\shapes\PentagonStrategy.h" />
+    <ClInclude Include="model\shapes\StarStrategy.h" />
+    <ClInclude Include="visitor\SfmlRenderer.h" />
+    <ClInclude Include="visitor\SaveVisitor.h" />
+    <ClInclude Include="visitor\IShapeVisitor.h" />
+    <ClInclude Include="view\componentsView\CanvasView.h" />
+    <ClInclude Include="core\Color.h" />
+    <ClInclude Include="editor\serializer\DocumentSerializer.h" />
+    <ClInclude Include="editor\EditorController.h" />
+    <ClInclude Include="editor\EditorState.h" />
+    <ClInclude Include="editor\Logger.h" />
+    <ClInclude Include="view\Application.h" />
+    <ClInclude Include="view\dialog\FileDialog.h" />
+    <ClInclude Include="graphics\SvgCanvas.h" />
+    <ClInclude Include="io\DocumentSerializer.h" />
+    <ClInclude Include="model\Bounds.h" />
+    <ClInclude Include="model\Color.h" />
+    <ClInclude Include="model\observer\ConsolePictureObserver.h" />
+    <ClInclude Include="model\Picture.h" />
+    <ClInclude Include="model\Shape.h" />
+    <ClInclude Include="model\shapes\EllipseStrategy.h" />
+    <ClInclude Include="model\shapes\IShapeStrategy.h" />
+    <ClInclude Include="model\shapes\PrototypeImpl.h" />
+    <ClInclude Include="model\shapes\RectangleStrategy.h" />
+    <ClInclude Include="model\shapes\ShapeStrategyFactory.h" />
+    <ClInclude Include="model\shapes\TriangleStrategy.h" />
+    <ClInclude Include="view\componentsView\Button.h" />
+    <ClInclude Include="view\EditorView.h" />
+    <ClInclude Include="view\componentsView\ShapeListView.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{a65bd38a-5c69-4df8-8d3c-82811024beb8}</ProjectGuid>
+    <RootNamespace>Shape</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>C:\Users\User\Desktop\Study\OOD\lab3\SFML-3.1.0\bin;C:\Users\User\Desktop\Study\OOD\lab3\SFML-3.1.0;C:\Users\User\Desktop\Study\OOD\lab3\SFML-3.1.0\include;C:\Users\User\Desktop\Study\OOD\lab3\boost_1_92_0</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <PostBuildEvent>
+      <Command>"$(TargetPath)" &amp; exit 0</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>C:\Users\User\Desktop\Study\OOD\lab3\SFML-3.1.0\bin;C:\Users\User\Desktop\Study\OOD\lab3\SFML-3.1.0;C:\Users\User\Desktop\Study\OOD\lab3\SFML-3.1.0\include;C:\Users\User\Desktop\Study\OOD\lab3\boost_1_92_0</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <PostBuildEvent>
+      <Command>"$(TargetPath)" &amp; exit 0</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>C:\Users\User\Desktop\Study\OOD\lab3\SFML-3.1.0\bin;C:\Users\User\Desktop\Study\OOD\lab3\SFML-3.1.0;C:\Users\User\Desktop\Study\OOD\lab3\SFML-3.1.0\include;C:\Users\User\Desktop\Study\OOD\lab3\boost_1_92_0</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <PostBuildEvent>
+      <Command>"$(TargetPath)" &amp; exit 0</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>C:\Users\User\Desktop\Study\OOD\lab3\SFML-3.1.0\bin;C:\Users\User\Desktop\Study\OOD\lab3\SFML-3.1.0;C:\Users\User\Desktop\Study\OOD\lab3\SFML-3.1.0\include;C:\Users\User\Desktop\Study\OOD\lab3\boost_1_92_0</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <PostBuildEvent>
+      <Command>"$(TargetPath)" &amp; exit 0</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

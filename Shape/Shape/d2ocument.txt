@@ -1,0 +1,6 @@
+RESULT!
+rectangle rect #dc3232 173 249 150 100
+circle ellipse #3278dc 300 150 80 50
+circle shape1 #3278dc 292 292 163 30
+triangle shape3 #32b450 277 392 654 392 465.5 72
+circle shape2 #3278dc 414 269 145 164

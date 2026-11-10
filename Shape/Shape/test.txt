@@ -1,0 +1,3 @@
+RESULT!
+rectangle shape1 #dc3232 209 57 345
+circle shape2 #3278dc 382 190 106 100
