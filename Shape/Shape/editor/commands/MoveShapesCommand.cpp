@@ -1,4 +1,5 @@
 #include "MoveShapesCommand.h"
+
 // TODO:делать через паттерн макро команды
 
 MoveShapesCommand::MoveShapesCommand(Picture& picture, std::vector<std::string> ids, double dx, double dy)

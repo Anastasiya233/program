@@ -7,7 +7,7 @@ class TriangleStrategy;
 class PentagonStrategy;
 class StarStrategy;
 
-//стратегию сделать через геттер
+//TODO::стратегию сделать через геттер
 
 class IShapeVisitor
 {
