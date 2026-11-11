@@ -4,6 +4,7 @@
 #include "../model/shapes/PentagonStrategy.h"
 #include "../model/shapes/RectangleStrategy.h"
 #include "../model/shapes/StarStrategy.h"
+#include "../model/shapes/GroupStrategy.h"
 #include "../model/shapes/TriangleStrategy.h"
 #include "../visitor/IShapeVisitor.h"
 #include <ostream>
@@ -18,6 +19,7 @@ public:
 	void Visit(const Shape& shape, const TriangleStrategy& strategy) override;
 	void Visit(const Shape& shape, const PentagonStrategy& strategy) override;
 	void Visit(const Shape& shape, const StarStrategy& strategy) override;
+	void Visit(const Shape& shape, const GroupStrategy& strategy) override;
 
 private:
 	std::ostream& m_out;

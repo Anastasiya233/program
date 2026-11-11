@@ -1,4 +1,4 @@
-﻿#define CATCH_CONFIG_MAIN
+#define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 #include <boost/signals2.hpp>
 
@@ -468,4 +468,45 @@ TEST_CASE("ChangeColorCommand: Undo/Redo restores color")
 
 	history.Redo();
 	CHECK(picture.GetShape("a")->GetColor().GetHexStr() == "#00ff00");
+}
+#include "../Shape/editor/commands/PictureSnapshotCommand.h"
+TEST_CASE("Nested groups move, scale, ungroup, undo and serialization")
+{
+    Picture picture;
+    picture.AddShape(std::make_unique<Shape>("a",Color(255,0,0),
+        std::make_unique<RectangleStrategy>(10, 10, 20, 20)));
+    picture.AddShape(std::make_unique<Shape>("b",Color(0,255,0),
+        std::make_unique<RectangleStrategy>(40, 10, 20, 20)));
+    picture.AddShape(std::make_unique<Shape>("c",Color(0,0,255),
+        std::make_unique<RectangleStrategy>(80, 10, 20, 20)));
+    auto before = picture.Clone();
+    REQUIRE(picture.GroupShapes({"a","b"}, "inner"));
+    REQUIRE(picture.GroupShapes({"inner","c"}, "outer"));
+    auto* outer = picture.GetShape("outer");
+    REQUIRE(outer != nullptr);
+    REQUIRE(outer->GetChildren().size() == 2);
+    const auto old = outer->GetBounds();
+    outer->Move(5,6);
+    REQUIRE(outer->GetBounds().left == Approx(old.left+5));
+    const auto moved = outer->GetBounds();
+    outer->SetBounds({moved.left,moved.top,moved.width*2,moved.height*2});
+    REQUIRE(outer->GetBounds().width == Approx(old.width*2));
+    const auto after = picture.Clone();
+    CommandHistory history;
+    history.PushExecuted(std::make_unique<PictureSnapshotCommand>(
+        picture, std::move(before), std::move(after),
+        std::vector<std::string>{"a","b","c","outer"}));
+    REQUIRE(history.CanUndo());
+    history.Undo();
+    REQUIRE(picture.GetShape("a") != nullptr);
+    REQUIRE(picture.GetShape("outer") == nullptr);
+    history.Redo();
+    REQUIRE(picture.GetShape("outer") != nullptr);
+    const std::string filename = "groups_roundtrip.txt";
+    DocumentSerializer::Save(picture,filename);
+    auto loaded = DocumentSerializer::Load(filename);
+    REQUIRE(loaded->GetShape("outer") != nullptr);
+    REQUIRE(loaded->GetShape("outer")->GetChildren().size() == 2);
+    REQUIRE(loaded->UngroupShape("outer").size() == 2);
+    REQUIRE(loaded->GetShape("inner") != nullptr);
 }

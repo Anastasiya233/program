@@ -14,6 +14,7 @@ public:
 
 	void Move(double dx, double dy);
 	void SetColor(const Color& color);
+	void SetColorRecursive(const Color& color);
 	void SetStrategy(std::unique_ptr<IShapeStrategy> strategy);
 	std::unique_ptr<Shape> Clone(const std::string& newId) const;
 
@@ -30,6 +31,7 @@ public:
 	Bounds GetBounds() const;
 	void SetBounds(const Bounds& b);
 	void Accept(IShapeVisitor& visitor) const;
+	std::vector<const Shape*> GetChildren() const;
 
 private:
 	std::string m_id;

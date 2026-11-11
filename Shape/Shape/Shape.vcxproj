@@ -80,6 +80,9 @@
     <ClInclude Include="model\Shape.h" />
     <ClInclude Include="model\shapes\EllipseStrategy.h" />
     <ClInclude Include="model\shapes\IShapeStrategy.h" />
+    <ClInclude Include="model\shapes\GroupStrategy.h" />
+    <ClInclude Include="editor\commands\PictureSnapshotCommand.h" />
+    <ClInclude Include="editor\commands\MacroCommand.h" />
     <ClInclude Include="model\shapes\PrototypeImpl.h" />
     <ClInclude Include="model\shapes\RectangleStrategy.h" />
     <ClInclude Include="model\shapes\ShapeStrategyFactory.h" />
@@ -87,6 +90,7 @@
     <ClInclude Include="view\componentsView\Button.h" />
     <ClInclude Include="view\EditorView.h" />
     <ClInclude Include="view\componentsView\ShapeListView.h" />
+    <ClInclude Include="view\componentsView\TimelineView.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

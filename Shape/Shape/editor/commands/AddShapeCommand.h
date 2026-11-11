@@ -12,6 +12,7 @@ public:
 
 	void Execute() override;
 	void Unexecute() override;
+	std::vector<std::string> AffectedIds() const override { return {m_shape->GetId()}; }
 
 	const std::string& GetShapeId() const;
 

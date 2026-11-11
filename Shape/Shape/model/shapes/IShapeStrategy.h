@@ -4,6 +4,10 @@
 #include "../Bounds.h"
 #include <memory>
 #include <string>
+#include <vector>
+
+class Shape;
+class Color;
 
 class IShapeStrategy
 {
@@ -18,4 +22,6 @@ public:
 	virtual std::string GetTypeName() const = 0;
 	virtual std::string GetParamsToString() const = 0;
 	virtual void Accept(const Shape& shape, IShapeVisitor& visitor) const = 0;
+	virtual std::vector<const Shape*> GetChildren() const { return {}; }
+	virtual void SetChildrenColor(const Color&) {}
 };

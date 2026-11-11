@@ -1,0 +1,4 @@
+Shape\Shape\view\componentsView\TimelineView.h
+Shape\Shape\model\shapes\GroupStrategy.h
+Shape\Shape\editor\commands\MacroCommand.h
+Shape\Shape\editor\commands\PictureSnapshotCommand.h

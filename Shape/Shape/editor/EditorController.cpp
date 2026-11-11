@@ -1,7 +1,9 @@
-﻿#include "EditorController.h"
+#include "EditorController.h"
 #include "../editor/serializer/DocumentSerializer.h"
 #include "../model/shapes/ShapeStrategyFactory.h"
 #include "commands/AddShapeCommand.h"
+#include "commands/PictureSnapshotCommand.h"
+#include "commands/MacroCommand.h"
 #include "commands/ChangeColorCommand.h"
 #include "commands/DeleteShapesCommand.h"
 #include "commands/MoveShapesCommand.h"
@@ -9,6 +11,7 @@
 #include "history/CommandHistory.h"
 #include <algorithm>
 #include <cmath>
+#include <functional>
 #include <limits>
 #include "commands/ReorderShapeCommand.h"
 
@@ -145,8 +148,11 @@ void EditorController::CommitResize()
 		}
 	}
 
-	m_history.PushExecuted(
-		std::make_unique<ResizeShapesCommand>(m_picture, std::move(changes)));
+	std::vector<std::unique_ptr<ICommand>> steps;
+	for (const auto& c : changes)
+		steps.push_back(std::make_unique<ResizeOneShapeCommand>(
+			m_picture, c.id, c.before, c.after));
+	m_history.PushExecuted(std::make_unique<MacroCommand>(std::move(steps)));
 }
 
 bool EditorController::IsDrawingMode() const
@@ -206,7 +212,17 @@ std::string EditorController::GenerateNewShapeId()
 	do
 	{
 		id = "shape" + std::to_string(m_nextId++);
-	} while (m_picture.GetShape(id) != nullptr);
+	} while ([&]() {
+		std::function<bool(const Shape*)> contains = [&](const Shape* s) {
+			if (s->GetId() == id) return true;
+			for (const Shape* child : s->GetChildren())
+				if (contains(child)) return true;
+			return false;
+		};
+		for (const Shape* s : m_picture.GetShapes())
+			if (contains(s)) return true;
+		return false;
+	}());
 	return id;
 }
 
@@ -395,7 +411,10 @@ void EditorController::CommitMove()
 		}
 	}
 
-	m_history.PushExecuted(std::make_unique<MoveShapesCommand>(m_picture, ids, dx, dy));
+	std::vector<std::unique_ptr<ICommand>> steps;
+	for (const auto& id : ids)
+		steps.push_back(std::make_unique<MoveOneShapeCommand>(m_picture,id,dx,dy));
+	m_history.PushExecuted(std::make_unique<MacroCommand>(std::move(steps)));
 }
 
 std::pair<double, double> EditorController::ClampDragDelta(double dx, double dy) const
@@ -685,6 +704,38 @@ Bounds EditorController::AdjustBasedCanvas(Bounds newBounds) const
 	return newBounds;
 }
 
+void EditorController::GroupSelection()
+{
+    if (m_state.SelectedIds.size() < 2) return;
+    auto before = m_picture.Clone();
+    auto affected = m_state.SelectedIds;
+    const std::string id = GenerateNewShapeId();
+    affected.push_back(id);
+    if (!m_picture.GroupShapes(m_state.SelectedIds, id)) return;
+    auto after = m_picture.Clone();
+    m_history.PushExecuted(std::make_unique<PictureSnapshotCommand>(
+        m_picture, std::move(before), std::move(after), affected));
+    m_state.ClearSelection();
+    m_state.AddToSelection(id);
+    m_state.ClearPreview();
+}
+
+void EditorController::UngroupSelection()
+{
+    if (m_state.SelectedIds.size() != 1) return;
+    auto before = m_picture.Clone();
+    const std::string originalGroupId = m_state.SelectedIds.front();
+    auto ids = m_picture.UngroupShape(originalGroupId);
+    if (ids.empty()) return;
+    auto affected = ids;
+    affected.push_back(originalGroupId);
+    auto after = m_picture.Clone();
+    m_history.PushExecuted(std::make_unique<PictureSnapshotCommand>(
+        m_picture, std::move(before), std::move(after), affected));
+    m_state.SelectedIds = std::move(ids);
+    m_state.ClearPreview();
+}
+
 void EditorController::DeleteShape()
 {
 	if (m_state.SelectedIds.empty())
@@ -740,7 +791,10 @@ void EditorController::Undo()
 {
 	try
 	{
-		m_history.Undo();
+		const auto ids = m_history.Undo();
+		m_state.ClearSelection();
+		for (const auto& id : ids)
+			if (m_picture.GetShape(id)) m_state.AddToSelection(id);
 		m_state.ClearPreview();
 	}
 	catch (const std::exception& e)
@@ -753,7 +807,10 @@ void EditorController::Redo()
 {
 	try
 	{
-		m_history.Redo();
+		const auto ids = m_history.Redo();
+		m_state.ClearSelection();
+		for (const auto& id : ids)
+			if (m_picture.GetShape(id)) m_state.AddToSelection(id);
 		m_state.ClearPreview();
 	}
 	catch (const std::exception& e)
@@ -769,6 +826,37 @@ void EditorController::SetSelectedShapesColor(const Color& color)
 		return;
 	}
 
+	// Groups require a snapshot to restore all descendants' individual colors.
+	bool includesGroup = false;
+	for (const auto& id : m_state.SelectedIds)
+		if (auto* s = m_picture.GetShape(id))
+			includesGroup |= !s->GetChildren().empty();
+	if (includesGroup)
+	{
+		auto before = m_picture.Clone();
+		std::function<bool(const Shape*)> differs = [&](const Shape* shape) {
+			if (shape->GetColor().GetHexStr() != color.GetHexStr()) return true;
+			for (const Shape* child : shape->GetChildren())
+				if (differs(child)) return true;
+			return false;
+		};
+		bool changed = false;
+		for (const auto& id : m_state.SelectedIds)
+		{
+			if (auto* shape = m_picture.GetShape(id); shape && differs(shape))
+			{
+				changed = true;
+				shape->SetColorRecursive(color);
+			}
+		}
+		if (changed)
+		{
+			auto after = m_picture.Clone();
+			m_history.PushExecuted(std::make_unique<PictureSnapshotCommand>(
+				m_picture, std::move(before), std::move(after), m_state.SelectedIds));
+		}
+		return;
+	}
 	std::vector<ChangeColorCommand::Change> changes;
 
 	for (const auto& id : m_state.SelectedIds)

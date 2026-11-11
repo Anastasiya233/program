@@ -10,6 +10,7 @@ public:
 	ReorderShapeCommand(Picture& picture, std::string id, int oldIndex, int newIndex);
 	void Execute() override;
 	void Unexecute() override;
+	std::vector<std::string> AffectedIds() const override { return {m_id}; }
 	std::vector<std::string> GetAffectedIds() const;
 
 private:

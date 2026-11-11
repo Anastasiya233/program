@@ -15,6 +15,8 @@ public:
 	void InsertShape(std::unique_ptr<Shape> shape, int index);
 	void DeleteShape(const std::string& id);
 	void MovePicture(double dx, double dy);
+	bool GroupShapes(const std::vector<std::string>& ids, const std::string& groupId);
+	std::vector<std::string> UngroupShape(const std::string& groupId);
 	void MoveShapeTo(const std::string& id, int newIndex);
 	Shape* GetShape(const std::string& id);
 	const Shape* GetShape(const std::string& id) const;

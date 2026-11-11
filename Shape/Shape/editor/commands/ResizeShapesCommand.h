@@ -20,6 +20,12 @@ public:
 
 	void Execute() override;
 	void Unexecute() override;
+	std::vector<std::string> AffectedIds() const override
+	{
+		std::vector<std::string> ids;
+		for (const auto& c: m_changes) ids.push_back(c.id);
+		return ids;
+	}
 
 	const std::vector<std::string> GetShapeIds() const;
 

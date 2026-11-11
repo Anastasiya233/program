@@ -1,4 +1,6 @@
 #include "Picture.h"
+#include "shapes/GroupStrategy.h"
+#include <set>
 #include <algorithm>
 #include <iostream>
 #include <stdexcept>
@@ -59,6 +61,53 @@ void Picture::DeleteShape(const std::string& id)
 
 	m_shapeRemoved(*it->shape);
 	m_shapes.erase(it);
+}
+
+bool Picture::GroupShapes(const std::vector<std::string>& ids, const std::string& groupId)
+{
+	if (GetShape(groupId)) return false;
+	std::set<std::string> unique(ids.begin(), ids.end());
+	if (unique.size() < 2) return false;
+	std::vector<std::pair<int, std::string>> ordered;
+	for (const auto& id : unique)
+	{
+		const int index = GetShapeIndex(id);
+		if (index < 0) return false;
+		ordered.emplace_back(index, id);
+	}
+	std::sort(ordered.begin(), ordered.end());
+	std::vector<std::unique_ptr<Shape>> children;
+	children.reserve(ordered.size());
+	for (const auto& [index, id] : ordered)
+		children.push_back(GetShape(id)->Clone(id));
+	const int insertionIndex = ordered.front().first;
+	for (auto it = ordered.rbegin(); it != ordered.rend(); ++it)
+		DeleteShape(it->second);
+	InsertShape(std::make_unique<Shape>(groupId, Color(0, 0, 0),
+		std::make_unique<GroupStrategy>(std::move(children))), insertionIndex);
+	return true;
+}
+
+std::vector<std::string> Picture::UngroupShape(const std::string& groupId)
+{
+	const auto* group = GetShape(groupId);
+	if (!group) return {};
+	auto children = group->GetChildren();
+	if (children.empty()) return {};
+	const int insertionIndex = GetShapeIndex(groupId);
+	std::vector<std::unique_ptr<Shape>> copies;
+	std::vector<std::string> ids;
+	for (const auto* child : children)
+	{
+		if (GetShape(child->GetId()))
+			throw std::runtime_error("Cannot ungroup: duplicate child id");
+		copies.push_back(child->Clone(child->GetId()));
+		ids.push_back(child->GetId());
+	}
+	DeleteShape(groupId);
+	for (std::size_t i = 0; i < copies.size(); ++i)
+		InsertShape(std::move(copies[i]), insertionIndex + static_cast<int>(i));
+	return ids;
 }
 
 void Picture::MovePicture(double dx, double dy)

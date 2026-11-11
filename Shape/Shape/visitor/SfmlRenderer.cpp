@@ -1,5 +1,10 @@
 #include "SfmlRenderer.h"
 
+void SfmlRenderer::Visit(const Shape&, const GroupStrategy& strategy)
+{
+	for (const Shape* child : strategy.GetChildren()) child->Accept(*this);
+}
+
 SfmlRenderer::SfmlRenderer(sf::RenderTarget& target)
 	: m_target(target)
 {

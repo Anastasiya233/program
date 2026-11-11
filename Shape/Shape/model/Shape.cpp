@@ -23,6 +23,12 @@ std::unique_ptr<Shape> Shape::Clone(const std::string& newId) const
 	return std::make_unique<Shape>(newId, m_color, m_strategy->Clone());
 }
 
+void Shape::SetColorRecursive(const Color& color)
+{
+	SetColor(color);
+	m_strategy->SetChildrenColor(color);
+}
+
 void Shape::SetColor(const Color& color)
 {
 	if (m_color.GetHexStr() == color.GetHexStr())
@@ -92,6 +98,11 @@ void Shape::SetBounds(const Bounds& b)
 {
 	m_strategy->SetBounds(b);
 	m_paramsChanged(*this);
+}
+
+std::vector<const Shape*> Shape::GetChildren() const
+{
+	return m_strategy->GetChildren();
 }
 
 void Shape::Accept(IShapeVisitor& visitor) const

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "../editor/commands/ChangeColorCommand.h"
 #include "../editor/history/CommandHistory.h"
@@ -23,6 +23,8 @@ public:
 	Shape* GetDraftShape() const;
 
 	void DeleteShape();
+	void GroupSelection();
+	void UngroupSelection();
 	void SaveDocument(const std::string& filename);
 	void LoadDocument(const std::string& filename);
 

@@ -1,6 +1,13 @@
 #include "SaveVisitor.h"
 #include <sstream>
 
+void SaveVisitor::Visit(const Shape& shape, const GroupStrategy& strategy)
+{
+	m_out << "group " << shape.GetId() << " " << shape.GetColor().GetHexStr() << "\n";
+	for (const Shape* child : strategy.GetChildren()) child->Accept(*this);
+	m_out << "endgroup\n";
+}
+
 SaveVisitor::SaveVisitor(std::ostream& out)
 	: m_out(out)
 {

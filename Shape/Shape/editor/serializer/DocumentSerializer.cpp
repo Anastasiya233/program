@@ -1,5 +1,7 @@
 #include "DocumentSerializer.h"
 #include "../../model/shapes/ShapeStrategyFactory.h"
+#include "../../model/shapes/GroupStrategy.h"
+#include <functional>
 #include "../../visitor/SaveVisitor.h"
 #include <fstream>
 #include <sstream>
@@ -37,33 +39,35 @@ std::unique_ptr<Picture> DocumentSerializer::Load(const std::string& filename)
 	}
 
 	auto newPicture = std::make_unique<Picture>();
-
+	std::function<std::unique_ptr<Shape>(const std::string&, std::istream&)> parse;
+	parse = [&parse](const std::string& source, std::istream& in) -> std::unique_ptr<Shape>
+		{
+			std::istringstream iss(source);
+			std::string type, id, hex;
+			if (!(iss >> type >> id >> hex) || type == "endgroup")
+				throw std::runtime_error("Invalid shape: " + source);
+			const Color color = Color::GetRGB(hex);
+			if (type == "group")
+			{
+				std::vector<std::unique_ptr<Shape>> children;
+				std::string childLine;
+				bool ended = false;
+				while (std::getline(in, childLine))
+				{
+					if (childLine.empty()) continue;
+					if (childLine == "endgroup") { ended = true; break; }
+					children.push_back(parse(childLine, in));
+				}
+				if (!ended) throw std::runtime_error("Unterminated group: " + id);
+				return std::make_unique<Shape>(id, color,
+					std::make_unique<GroupStrategy>(std::move(children)));
+			}
+			return std::make_unique<Shape>(id, color,
+				ShapeStrategyFactory::CreateShapeFromString(type, iss));
+		};
 	while (std::getline(file, line))
 	{
-		if (line.empty())
-		{
-			continue;
-		}
-
-		std::istringstream iss(line);
-		std::string type, id, colorHex;
-
-		if (!(iss >> type >> id >> colorHex))
-		{
-			throw std::runtime_error("Invalid line format: " + line);
-		}
-
-		auto strategy = ShapeStrategyFactory::CreateShapeFromString(type, iss);
-		if (!strategy)
-		{
-			throw std::runtime_error("Unknown shape type: " + type);
-		}
-
-		Color color = Color::GetRGB(colorHex);
-		auto shape = std::make_unique<Shape>(id, color, std::move(strategy));
-
-		newPicture->AddShape(std::move(shape));
+		if (!line.empty()) newPicture->AddShape(parse(line, file));
 	}
-
 	return newPicture;
 }

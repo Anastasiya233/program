@@ -35,6 +35,9 @@ public:
 	const double toolbarHeight = 40.0;
 	const double listPanelWidth = 200.0;
 
+	double canvasZoom = 1.0;
+	double timelineZoom = 1.0;
+	double currentTime = 0.0;
 	std::string currentFileName;
 	std::string lastError;
 	int draggedListIndex = -1;

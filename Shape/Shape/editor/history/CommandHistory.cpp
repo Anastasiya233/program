@@ -19,26 +19,22 @@ void CommandHistory::Execute(std::unique_ptr<ICommand> command)
 	m_nextCommandIndex = m_history.size();
 }
 
-void CommandHistory::Undo()
+std::vector<std::string> CommandHistory::Undo()
 {
-	if (m_nextCommandIndex == 0)
-	{
-		return;
-	}
-
+	if (m_nextCommandIndex == 0) return {};
+	const auto ids = m_history[m_nextCommandIndex - 1]->AffectedIds();
 	m_history[m_nextCommandIndex - 1]->Unexecute();
 	--m_nextCommandIndex;
+	return ids;
 }
 
-void CommandHistory::Redo()
+std::vector<std::string> CommandHistory::Redo()
 {
-	if (m_nextCommandIndex >= m_history.size())
-	{
-		return;
-	}
-
+	if (m_nextCommandIndex >= m_history.size()) return {};
+	const auto ids = m_history[m_nextCommandIndex]->AffectedIds();
 	m_history[m_nextCommandIndex]->Execute();
 	++m_nextCommandIndex;
+	return ids;
 }
 
 void CommandHistory::Clear()

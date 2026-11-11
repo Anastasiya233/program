@@ -3,6 +3,8 @@
 #include <cstddef>
 #include <deque>
 #include <memory>
+#include <vector>
+#include <string>
 
 class ICommand
 {
@@ -10,6 +12,7 @@ public:
 	virtual ~ICommand() = default;
 	virtual void Execute() = 0;
 	virtual void Unexecute() = 0;
+	virtual std::vector<std::string> AffectedIds() const { return {}; }
 };
 
 class CommandHistory
@@ -21,8 +24,8 @@ public:
 	CommandHistory& operator=(const CommandHistory&) = delete;
 
 	void Execute(std::unique_ptr<ICommand> command);
-	void Undo();
-	void Redo();
+	std::vector<std::string> Undo();
+	std::vector<std::string> Redo();
 	void Clear();
 
 	bool CanUndo() const;
